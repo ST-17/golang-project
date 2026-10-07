@@ -1,0 +1,5 @@
+# SQLite database (created automatically on startup)
+*.db
+
+# Build output
+*.exe

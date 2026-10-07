@@ -1,0 +1,9 @@
+POST http://localhost:8080/events
+Content-Type: application/json
+
+{
+  "name": "Go Meetup",
+  "description": "Monthly meetup for Go developers",
+  "location": "Almaty, Tech Hub, Hall A",
+  "dateTime": "2026-01-01T15:30:00.000Z"
+}

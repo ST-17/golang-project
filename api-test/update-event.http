@@ -1,0 +1,9 @@
+PUT http://localhost:8080/events/1
+Content-Type: application/json
+
+{
+  "name": "Go Meetup (updated)",
+  "description": "Updated agenda: Go 1.27 features and live coding",
+  "location": "Almaty, Tech Hub, Hall B",
+  "dateTime": "2026-10-10T15:30:00.000Z"
+}
