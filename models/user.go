@@ -60,11 +60,11 @@ func GetAllUsers() ([]User, error) {
 }
 
 func (u User) ValidateCredentials() error {
-	query := "SELECT password FROM users WHERE email = ?"
+	query := "SELECT id, password FROM users WHERE email = ?"
 	row := db.DB.QueryRow(query, u.Email)
 
 	var retrivedPassword string
-	err := row.Scan(&retrivedPassword)
+	err := row.Scan(&u.ID, &retrivedPassword)
 	if err != nil {
 		return errors.New("Can't find user!")
 	}

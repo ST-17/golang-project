@@ -1,5 +1,6 @@
 POST http://localhost:8080/events
 Content-Type: application/json
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InNhbWF0QGdtYWlsLmNvbSIsImV4cCI6MTc5MTcyMTgxMiwidXNlcklkIjowfQ.SNz4eLNGpR9IK-wx0xOoU8yG59lnP-8BtUTwX8dw-Gc
 
 {
   "name": "Go Meetup",
