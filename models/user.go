@@ -1,6 +1,8 @@
 package models
 
 import (
+	"errors"
+
 	"example.com/rest-api/db"
 	"example.com/rest-api/utils"
 )
@@ -55,4 +57,23 @@ func GetAllUsers() ([]User, error) {
 	}
 
 	return result, nil
+}
+
+func (u User) ValidateCredentials() error {
+	query := "SELECT password FROM users WHERE email = ?"
+	row := db.DB.QueryRow(query, u.Email)
+
+	var retrivedPassword string
+	err := row.Scan(&retrivedPassword)
+	if err != nil {
+		return errors.New("Can't find user!")
+	}
+
+	passwordIsValid := utils.CheckPassword(retrivedPassword, u.Password)
+
+	if !passwordIsValid {
+		return errors.New("Invalid credentials!")
+	}
+
+	return nil
 }

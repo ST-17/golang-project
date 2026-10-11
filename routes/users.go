@@ -33,3 +33,20 @@ func getAllUsers(context *gin.Context) {
 
 	context.JSON(http.StatusOK, gin.H{"users": users})
 }
+
+func login(context *gin.Context) {
+	var user models.User
+	err := context.ShouldBindJSON(&user)
+	if err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"message": "Invalid request data"})
+		return
+	}
+
+	err = user.ValidateCredentials()
+	if err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+		return
+	}
+
+	context.JSON(http.StatusOK, gin.H{"message": "Login successful"})
+}
