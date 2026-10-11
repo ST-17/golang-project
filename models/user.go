@@ -59,8 +59,8 @@ func GetAllUsers() ([]User, error) {
 	return result, nil
 }
 
-func (u User) ValidateCredentials() error {
-	query := "SELECT id, password FROM users WHERE email = ?"
+func (u *User) ValidateCredentials() error {
+	query := "SELECT ID, password FROM users WHERE email = ?"
 	row := db.DB.QueryRow(query, u.Email)
 
 	var retrivedPassword string

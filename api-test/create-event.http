@@ -1,9 +1,9 @@
 POST http://localhost:8080/events
 Content-Type: application/json
-Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InNhbWF0QGdtYWlsLmNvbSIsImV4cCI6MTc5MTcyMTgxMiwidXNlcklkIjowfQ.SNz4eLNGpR9IK-wx0xOoU8yG59lnP-8BtUTwX8dw-Gc
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InNhbWF0MkBnbWFpbC5jb20iLCJleHAiOjE3OTE3MjMyNzMsInVzZXJJZCI6Mn0.4cIZ3uDCvPeiWEANf3BxqgI00nEXqbK6qmCjA5iB8EA
 
 {
-  "name": "Go Meetup",
+  "name": "Java Meetup",
   "description": "Monthly meetup for Go developers",
   "location": "Almaty, Tech Hub, Hall A",
   "dateTime": "2026-01-01T15:30:00.000Z"
