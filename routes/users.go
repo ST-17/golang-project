@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"errors"
 	"net/http"
 
 	"example.com/rest-api/models"
@@ -12,13 +13,13 @@ func signup(context *gin.Context) {
 	var user models.User
 	err := context.ShouldBindJSON(&user)
 	if err != nil {
-		context.JSON(http.StatusBadRequest, gin.H{"message": "Invalid request data"})
+		context.JSON(http.StatusBadRequest, gin.H{"message": "Invalid request body: check that all required fields are present and correctly formatted"})
 		return
 	}
 
 	err = user.Save()
 	if err != nil {
-		context.JSON(http.StatusInternalServerError, gin.H{"message": "Could not create user"})
+		context.JSON(http.StatusInternalServerError, gin.H{"message": "Failed to create user"})
 		return
 	}
 
@@ -28,7 +29,7 @@ func signup(context *gin.Context) {
 func getAllUsers(context *gin.Context) {
 	users, err := models.GetAllUsers()
 	if err != nil {
-		context.JSON(http.StatusInternalServerError, gin.H{"message": "Could not fetch users"})
+		context.JSON(http.StatusInternalServerError, gin.H{"message": "Failed to fetch users"})
 		return
 	}
 
@@ -39,19 +40,23 @@ func login(context *gin.Context) {
 	var user models.User
 	err := context.ShouldBindJSON(&user)
 	if err != nil {
-		context.JSON(http.StatusBadRequest, gin.H{"message": "Invalid request data"})
+		context.JSON(http.StatusBadRequest, gin.H{"message": "Invalid request body: check that all required fields are present and correctly formatted"})
 		return
 	}
 
 	err = user.ValidateCredentials()
+	if errors.Is(err, models.ErrInvalidCredentials) {
+		context.JSON(http.StatusUnauthorized, gin.H{"message": "Invalid email or password"})
+		return
+	}
 	if err != nil {
-		context.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
+		context.JSON(http.StatusInternalServerError, gin.H{"message": "Failed to log in"})
 		return
 	}
 
 	token, err := utils.GenerateToken(user.Email, user.ID)
 	if err != nil {
-		context.JSON(http.StatusInternalServerError, gin.H{"message": "JWT error!"})
+		context.JSON(http.StatusInternalServerError, gin.H{"message": "Failed to generate authentication token"})
 		return
 	}
 

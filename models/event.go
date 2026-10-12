@@ -1,6 +1,7 @@
 package models
 
 import (
+	"database/sql"
 	"errors"
 	"time"
 
@@ -82,6 +83,9 @@ func GetEventById(id int64) (*Event, error) {
 
 	var event Event
 	err := row.Scan(&event.ID, &event.Name, &event.Description, &event.Location, &event.DateTime, &event.UserID)
+	if errors.Is(err, sql.ErrNoRows) {
+		return nil, ErrEventNotFound
+	}
 	if err != nil {
 		return nil, err
 	}
@@ -101,6 +105,7 @@ func DeleteEventById(id int64) error {
 	return err
 }
 
+var ErrEventNotFound = errors.New("event not found")
 var ErrAlreadyRegistered = errors.New("user is already registered for this event")
 
 func (e Event) IsUserRegistered(userId int64) (bool, error) {

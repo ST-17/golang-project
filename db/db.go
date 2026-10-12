@@ -14,7 +14,7 @@ func InitDB() {
 	DB, err = sql.Open("sqlite3", "api.db")
 
 	if err != nil {
-		panic("Could not connect to DB")
+		panic("failed to connect to database")
 	}
 
 	DB.SetMaxOpenConns(10)
@@ -34,7 +34,7 @@ func createTables() {
 	_, err := DB.Exec(createUsersTable)
 	if err != nil {
 		fmt.Println(err)
-		panic("Could not create users table")
+		panic("failed to create users table")
 	}
 
 	createEventsTable := `
@@ -51,7 +51,7 @@ func createTables() {
 	_, err = DB.Exec(createEventsTable)
 	if err != nil {
 		fmt.Println(err)
-		panic("Could not create events table")
+		panic("failed to create events table")
 	}
 
 	createRegistrationsTable := `
@@ -66,7 +66,7 @@ func createTables() {
 	_, err = DB.Exec(createRegistrationsTable)
 	if err != nil {
 		fmt.Println(err)
-		panic("Could not create registrations table")
+		panic("failed to create registrations table")
 	}
 
 	// Separate index instead of an inline UNIQUE so it also applies to an already existing table.
@@ -77,6 +77,6 @@ func createTables() {
 	_, err = DB.Exec(createRegistrationsUniqueIndex)
 	if err != nil {
 		fmt.Println(err)
-		panic("Could not create registrations unique index")
+		panic("failed to create registrations unique index")
 	}
 }
