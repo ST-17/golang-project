@@ -53,4 +53,30 @@ func createTables() {
 		fmt.Println(err)
 		panic("Could not create events table")
 	}
+
+	createRegistrationsTable := `
+	CREATE TABLE IF NOT EXISTS registrations (
+		id INTEGER PRIMARY KEY AUTOINCREMENT,
+		event_id INTEGER NOT NULL,
+		user_id INTEGER NOT NULL,
+		FOREIGN KEY(event_id) REFERENCES events(id),
+		FOREIGN KEY(user_id) REFERENCES users(id)
+	)
+	`
+	_, err = DB.Exec(createRegistrationsTable)
+	if err != nil {
+		fmt.Println(err)
+		panic("Could not create registrations table")
+	}
+
+	// Separate index instead of an inline UNIQUE so it also applies to an already existing table.
+	createRegistrationsUniqueIndex := `
+	CREATE UNIQUE INDEX IF NOT EXISTS idx_registrations_event_user
+	ON registrations(event_id, user_id)
+	`
+	_, err = DB.Exec(createRegistrationsUniqueIndex)
+	if err != nil {
+		fmt.Println(err)
+		panic("Could not create registrations unique index")
+	}
 }

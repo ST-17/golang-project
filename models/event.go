@@ -1,9 +1,11 @@
 package models
 
 import (
+	"errors"
 	"time"
 
 	"example.com/rest-api/db"
+	"github.com/mattn/go-sqlite3"
 )
 
 type Event struct {
@@ -96,5 +98,50 @@ func DeleteEventById(id int64) error {
 	defer stmt.Close()
 
 	_, err = stmt.Exec(id)
+	return err
+}
+
+var ErrAlreadyRegistered = errors.New("user is already registered for this event")
+
+func (e Event) IsUserRegistered(userId int64) (bool, error) {
+	query := "SELECT EXISTS(SELECT 1 FROM registrations WHERE event_id = ? AND user_id = ?)"
+	var exists bool
+	err := db.DB.QueryRow(query, e.ID, userId).Scan(&exists)
+	return exists, err
+}
+
+func (e Event) RegisterUser(userId int64) error {
+	registered, err := e.IsUserRegistered(userId)
+	if err != nil {
+		return err
+	}
+	if registered {
+		return ErrAlreadyRegistered
+	}
+
+	query := "INSERT INTO registrations(event_id, user_id) VALUES (?, ?)"
+	stmt, err := db.DB.Prepare(query)
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+
+	_, err = stmt.Exec(e.ID, userId)
+	var sqliteErr sqlite3.Error
+	if errors.As(err, &sqliteErr) && sqliteErr.ExtendedCode == sqlite3.ErrConstraintUnique {
+		return ErrAlreadyRegistered
+	}
+	return err
+}
+
+func (e Event) CancelUserRegistration(userId int64) error {
+	query := "DELETE FROM registrations WHERE event_id = ? and user_id = ?"
+	stmt, err := db.DB.Prepare(query)
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+
+	_, err = stmt.Exec(e.ID, userId)
 	return err
 }
